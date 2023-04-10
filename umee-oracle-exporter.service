@@ -1,0 +1,18 @@
+[Unit]
+Description=Umee Oracle Exporter service
+After=network.target
+
+[Service]
+Environment=PYTHONUNBUFFERED=1
+Type=simple
+Restart=always
+RestartSec=1
+User=<user>
+WorkingDirectory=<home>umee-oracle-exporter
+ExecStart=<home>umee-oracle-exporter/.venv/bin/python3 -u <home>umee-oracle-exporter/exporter.py
+StandardError=syslog
+SyslogIdentifier=umee-oracle-exporter
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target

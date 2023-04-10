@@ -1,0 +1,11 @@
+groups:
+- name: umee-oracle
+  rules:
+  - alert: bad_miss_rate
+    expr: miss_rate > 0.05
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "miss rate hit 5%"
+      description: "Umee Oracle is missing votes, please check {{ $labels.instance }}"
