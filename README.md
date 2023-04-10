@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- python 3.10.x
+- python 3
 
 ## Installation
 
