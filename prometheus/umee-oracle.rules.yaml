@@ -8,4 +8,13 @@ groups:
       severity: critical
     annotations:
       summary: "miss rate hit 5%"
-      description: "Umee Oracle is missing votes, please check {{ $labels.instance }}"
+      description: "Umee Oracle miss rate is at 5%, fix urgently {{ $labels.instance }} or go to jail"
+
+  - alert: miss_rate_going_up
+    expr: delta(miss_rate[5m]) > 0 and miss_rate > 0.01
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "miss rate is going up"
+      description: "Umee feeder miss rate is going up, Let's not wait for the 5%, please check {{ $labels.instance }}"
