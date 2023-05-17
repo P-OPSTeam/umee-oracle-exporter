@@ -24,7 +24,7 @@ def http_json_call(url):
 
 def argsparse():
 
-   parser = argparse.ArgumentParser(description="Forta Exporter")
+   parser = argparse.ArgumentParser(description="Umee Oracle Exporter")
    parser.add_argument( "-v", "--verbose", help="increase output/debug \
                        verbosity and details, default is false",
                         action="store_true")
@@ -49,7 +49,7 @@ class AppMetrics:
     """
 
     def __init__(self, polling_interval_seconds=15, valoper="", 
-                 api_endpoint="https://api.ruby.canon-2.network.umee.cc",
+                 api_endpoint="http://localhost:1317",
                  blocktime = 5,verbose=False) :
         self.polling_interval_seconds = polling_interval_seconds
         self.valoper = valoper
@@ -76,6 +76,8 @@ the next estimated windows start in UTC")
 the next vote")
         self.last_block_vote = Gauge("last_block_vote", "Last block validator \
 voted", ["valoper"])
+        self.symbols_count = Gauge("symbols_count", "Number of symbols the \
+feeder is supposed to broadcast")
 
 
     def run_metrics_loop(self):
@@ -99,6 +101,10 @@ voted", ["valoper"])
             self.minvalidperwindow.set(oracle_config['min_valid_per_window'])
             self.slash_fraction.set(oracle_config['slash_fraction'])
             self.vote_period.set(oracle_config['vote_period'])
+            self.symbols_count.set(len(oracle_config['accept_list']))
+            
+            # can you generate a snippet for counting the number of element in the array
+
 
             # Fetch current windows progress
             url=f"{self.apiendpoint}/umee/oracle/v1/slash_window"
@@ -117,8 +123,10 @@ voted", ["valoper"])
                                        feeder=feeder_account['feeder_addr']).set(1)
 
             # calculate the miss rate
-            self.miss_rate.labels(valoper=self.valoper).set(int(current_miss['miss_counter']) / 
-                                                            int(slash_window['window_progress']))
+            self.miss_rate.labels(valoper=self.valoper).set(
+                int(current_miss['miss_counter']) / 
+                (int(slash_window['window_progress']) * 
+                len(oracle_config['accept_list'])))
 
             # calculate the estimated windows start
             dt=datetime.today() + timedelta(seconds=((int(oracle_config['slash_window']) - 
