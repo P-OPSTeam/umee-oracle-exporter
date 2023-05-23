@@ -129,9 +129,11 @@ feeder is supposed to broadcast")
                 len(oracle_config['accept_list'])))
 
             # calculate the estimated windows start
-            dt=datetime.today() + timedelta(seconds=((int(oracle_config['slash_window']) - 
+            dt=datetime.today() + timedelta(seconds=(((int(oracle_config['slash_window']) / 
+                                                      int(oracle_config['vote_period'])) - 
                                                       int(slash_window['window_progress']) + 1 ) * 
-                                                      int(self.blocktime)))
+                                                      int(self.blocktime) * 
+                                                      int(oracle_config['vote_period'])))
             dt=dt.replace(tzinfo=timezone.utc)
             self.next_window_start.set(dt.timestamp())
 
