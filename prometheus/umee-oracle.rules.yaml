@@ -26,4 +26,4 @@ groups:
       severity: critical
     annotations:
       summary: "miss_counter is going up"
-      description: "One of more asset missed their vote, please check"
+      description: "One or more asset missed their vote, please check"
